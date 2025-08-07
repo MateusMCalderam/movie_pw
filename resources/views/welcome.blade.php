@@ -1,51 +1,139 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vindo | Netflix Clone</title>
-    <link rel="icon" href="{{ asset('favicon.ico') }}">
-    @vite('resources/css/app.css') <!-- Se estiver usando Vite -->
-</head>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .movie-card {
+        transition: all 0.3s ease;
+        background: linear-gradient(145deg, #1f2937, #111111);
+    }
+
+    .movie-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .genre-badge {
+        background: linear-gradient(45deg, #dc2626, #991b1b);
+        animation: pulse 2s infinite;
+    }
+
+    .hero-bg {
+        background: linear-gradient(135deg, #000000 0%, #1f1f1f 50%, #2d2d2d 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.03"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.08"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+    }
+
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    .spotlight {
+        background: radial-gradient(circle at center, rgba(220, 38, 38, 0.3) 0%, transparent 70%);
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: spotlight 8s linear infinite;
+    }
+
+    @keyframes spotlight {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    .film-strip {
+        background: repeating-linear-gradient(90deg,
+                #2d2d2d 0px,
+                #2d2d2d 20px,
+                #1a1a1a 20px,
+                #1a1a1a 40px);
+        height: 8px;
+    }
+
+    .glow-text {
+        text-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+    }
+
+    .rating-stars {
+        background: linear-gradient(45deg, #f87171, #ef4444);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
+
 <body class="bg-black text-white">
-
-    <!-- Background image overlay -->
-    <div class="relative h-screen bg-cover bg-center" style="background-image: url('https://assets.nflxext.com/ffe/siteui/vlv3/00000000-0000-0000-0000-000000000000/00000000-0000-0000-0000-000000000000/BR-pt-20230807-popsignuptwoweeks-perspective_alpha_website_large.jpg');">
-        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
-
-        <!-- Top Navbar -->
-        <div class="relative z-10 px-6 py-4 flex justify-between items-center">
-            <h1 class="text-3xl font-bold text-red-600">NETFLIX</h1>
-            <div>
-                <a href="{{ route('login') }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded">
-                    Entrar
-                </a>
+    <!-- Cabeçalho -->
+    <header class="bg-black/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="text-3xl font-bold glow-text">🎬 Infoflix</div>
+                    <div class="film-strip w-20 hidden md:block"></div>
+                </div>
+                <nav class="flex space-x-6 text-gray-300">
+                    <button class="hover:text-red-500 transition-colors">Início</button>
+                    <button class="hover:text-red-500 transition-colors">Gêneros</button>
+                    <button class="hover:text-red-500 transition-colors">Em Alta</button>
+                    <a href="{{ route('login') }}" class="bg:text-red-500 transition-colors ">
+                        <button class="bg-gradient-to-r from-red-700 to-red-500 px-4 py-2 rounded-full font-semibold hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-red-500/25">
+                            Login
+                        </button>
+                    </a>
+                </nav>
             </div>
         </div>
+    </header>
 
-        <!-- Welcome Text -->
-        <div class="relative z-10 flex flex-col justify-center items-center h-full text-center px-4">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                Filmes, séries e muito mais. Sem limites.
-            </h2>
-            <p class="text-lg md:text-xl mb-6">
-                Assista onde quiser. Cancele quando quiser.
+    <section id="home" class="hero-bg min-h-screen flex items-center justify-center relative">
+        <div class="spotlight top-1/4 left-1/4"></div>
+        <div class="spotlight top-3/4 right-1/4" style="animation-delay: -4s;"></div>
+
+        <div class="text-center z-10 max-w-4xl mx-auto px-6">
+            <h1 class="text-7xl font-bold mb-6 glow-text floating-animation">
+                Bem-vindo ao Infoflix
+            </h1>
+            <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+                Explore o mundo do cinema com estilo. Dos clássicos aos mais recentes sucessos de bilheteria.
             </p>
-
-            <!-- Call to Action -->
-            <div class="w-full max-w-2xl">
-                <p class="text-md mb-4">Pronto para assistir? Informe seu email para criar ou reiniciar sua assinatura.</p>
-                <form action="{{ route('register') }}" method="GET" class="flex flex-col md:flex-row items-center gap-4">
-                    <input type="email" name="email" placeholder="Email" required
-                           class="w-full md:flex-1 px-4 py-3 rounded text-black focus:outline-none focus:ring-2 focus:ring-red-600">
-                    <button type="submit"
-                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 font-semibold rounded">
-                        Vamos lá &raquo;
-                    </button>
-                </form>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button class="bg-gradient-to-r from-red-700 to-red-500 px-8 py-4 rounded-full font-semibold hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-red-500/25">
+                    Explorar Gêneros
+                </button>
+                <button class="border-2 border-white/20 px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition-all duration-300">
+                    O Que Está em Alta
+                </button>
             </div>
         </div>
-    </div>
-
+    </section>
 </body>
-</html>

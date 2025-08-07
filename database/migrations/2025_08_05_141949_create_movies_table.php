@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('movies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->uuid('uuid');
             $table->text('synopsis')->nullable();
             $table->year('year');
             $table->string('cover_image')->nullable();
