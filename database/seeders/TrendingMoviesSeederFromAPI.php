@@ -18,7 +18,7 @@ class TrendingMoviesSeederFromAPI extends Seeder
         $url = "https://api.themoviedb.org/3/trending/movie/week?api_key={$apiKey}&language=pt-BR";
 
         $response =$response = Http::withToken($apiKey)
-    ->get("https://api.themoviedb.org/3/trending/movie/week?language=pt-BR");
+            ->get("https://api.themoviedb.org/3/trending/movie/week?language=pt-BR");
 
 
         if ($response->successful()) {
