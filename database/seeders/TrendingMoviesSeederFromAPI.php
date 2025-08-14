@@ -6,26 +6,24 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use App\Models\Movie;
+use App\Models\Category;
 
 class TrendingMoviesSeederFromAPI extends Seeder
 {
     public function run(): void
     {
-        
         $apiKey = config('services.tmdb.api_key');
-
-        $this->command->info('Usando chave: ' . $apiKey);
-        $url = "https://api.themoviedb.org/3/trending/movie/week?api_key={$apiKey}&language=pt-BR";
-
-        $response =$response = Http::withToken($apiKey)
+        
+        $response = Http::withToken($apiKey)
             ->get("https://api.themoviedb.org/3/trending/movie/week?language=pt-BR");
-
 
         if ($response->successful()) {
             $movies = $response->json('results');
 
             foreach ($movies as $movie) {
-                Movie::updateOrCreate(
+                $this->command->info("Processando filme: {$movie['title']}");
+
+                $movieModel = Movie::firstOrCreate(
                     ['name' => $movie['title']],
                     [
                         'uuid' => Str::uuid(),
@@ -35,8 +33,17 @@ class TrendingMoviesSeederFromAPI extends Seeder
                         'trailer_link' => $this->getTrailerLink($movie['id'], $apiKey),
                     ]
                 );
+
+                if (empty($movieModel->uuid)) {
+                    $movieModel->uuid = Str::uuid();
+                    $movieModel->save();
+                }
+
+                $this->attachMovieGenres($movieModel, $movie['id'], $apiKey);
             }
-        }else {
+
+            $this->command->info('Filmes importados com sucesso!');
+        } else {
             $this->command->error('Erro ao buscar filmes do TMDB: ' . $response->status());
             $this->command->error($response->body());
         }
@@ -58,5 +65,29 @@ class TrendingMoviesSeederFromAPI extends Seeder
         }
 
         return null;
+    }
+
+    protected function attachMovieGenres($movieModel, $movieId, $apiKey): void
+    {
+        $response = Http::withToken($apiKey)
+            ->get("https://api.themoviedb.org/3/movie/{$movieId}?language=pt-BR");
+
+        if ($response->successful()) {
+            $movieDetails = $response->json();
+            $genres = $movieDetails['genres'] ?? [];
+
+            $categoryIds = [];
+            foreach ($genres as $genre) {
+                $category = Category::where('name', $genre['name'])->first();
+                if ($category) {
+                    $categoryIds[] = $category->id;
+                }
+            }
+
+            if (!empty($categoryIds)) {
+                $movieModel->categories()->sync($categoryIds);
+                $this->command->info("  - Gêneros associados: " . implode(', ', collect($genres)->pluck('name')->toArray()));
+            }
+        }
     }
 }

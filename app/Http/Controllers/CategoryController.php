@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Str;
 class CategoryController extends Controller
 {
     public function index()
@@ -25,10 +25,11 @@ class CategoryController extends Controller
         ]);
 
         Category::create([
-            'name' => $request->name
+            'name' => $request->name,
+            'uuid' => Str::uuid(),
         ]);
 
-        return redirect()->route('categories.index');
+        return redirect()->route('admin.categories.index');
     }
 
     public function edit(Category $category)
@@ -37,22 +38,22 @@ class CategoryController extends Controller
     }
 
    public function update(Request $request, Category $category)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
 
-    $category->update([
-        'name' => $request->name
-    ]);
+        $category->update([
+            'name' => $request->name
+        ]);
 
-    return redirect()->route('categories.index');
-}
+        return redirect()->route('admin.categories.index');
+    }
 
     public function destroy(Category $category)
     {
         $category->delete();
 
-        return redirect()->route('categories.index');
+        return redirect()->route('admin.categories.index')->with('success', 'Categoria excluída com sucesso!');
     }
 }

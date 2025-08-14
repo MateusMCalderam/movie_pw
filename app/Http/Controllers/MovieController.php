@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -16,7 +17,8 @@ class MovieController extends Controller
 
     public function create()
     {
-        return view('movies.create');
+        $categories = Category::all();
+        return view('movies.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -27,13 +29,30 @@ class MovieController extends Controller
             'year' => 'required|digits:4|integer|min:1900',
             'cover_image' => 'nullable|string',
             'trailer_link' => 'nullable|string',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:categories,id',
         ]);
 
-        $validated['uuid'] = Str::uuid();
-        Movie::create($validated);
+        if ($request->hasFile('cover_image_file')) {
+            $path = $request->file('cover_image_file')->store('covers', 'public');
+            $movie->cover_image = asset('storage/' . $path);
+        } else {
+            $movie->cover_image = $request->input('cover_image');
+        }
 
-        return redirect()->route('movies.index')->with('success', 'Filme criado com sucesso!');
+
+        $validated['uuid'] = Str::uuid();
+
+        $movie = Movie::create($validated);
+
+        if (!empty($validated['categories'])) {
+            $movie->categories()->sync($validated['categories']);
+        }
+
+        return redirect()->route('admin.movies.index')
+            ->with('success', 'Filme criado com sucesso!');
     }
+
 
     public function show(Movie $movie)
     {
@@ -42,7 +61,10 @@ class MovieController extends Controller
 
     public function edit(Movie $movie)
     {
-        return view('movies.edit', compact('movie'));
+        $categories = Category::all();
+        $selectedCategories = $movie->categories->pluck('id')->toArray();
+
+        return view('movies.edit', compact('movie', 'categories', 'selectedCategories'));
     }
 
     public function update(Request $request, Movie $movie)
@@ -53,17 +75,32 @@ class MovieController extends Controller
             'year' => 'required|digits:4|integer|min:1900',
             'cover_image' => 'nullable|string',
             'trailer_link' => 'nullable|string',
+            'categories' => 'required|array',
+            'categories.*' => 'exists:categories,id',
         ]);
+
+        if ($request->hasFile('cover_image_file')) {
+            $path = $request->file('cover_image_file')->store('covers', 'public');
+            $movie->cover_image = asset('storage/' . $path);
+        } else {
+            $movie->cover_image = $request->input('cover_image');
+        }
 
         $movie->update($validated);
 
-        return redirect()->route('movies.index')->with('success', 'Filme atualizado com sucesso!');
+        $movie->categories()->sync($validated['categories'] ?? []);
+
+        return redirect()->route('admin.movies.index')
+            ->with('success', 'Filme atualizado com sucesso!');
     }
+
 
     public function destroy(Movie $movie)
     {
         $movie->delete();
 
-        return redirect()->route('movies.index')->with('success', 'Filme excluído com sucesso!');
+        return redirect()
+            ->route('admin.movies.index')
+            ->with('success', "O filme '{$movie->name}' foi excluído com sucesso!");
     }
 }

@@ -38,14 +38,10 @@
         pointer-events: none;
     }
 
-
     @keyframes float {
-
-        0%,
-        100% {
+        0%, 100% {
             transform: translateY(0px);
         }
-
         50% {
             transform: translateY(-20px);
         }
@@ -65,7 +61,6 @@
         0% {
             transform: translate(-50%, -50%) rotate(0deg);
         }
-
         100% {
             transform: translate(-50%, -50%) rotate(360deg);
         }
@@ -90,6 +85,22 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
+
+    .movie-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .floating-animation {
+        animation: float 6s ease-in-out infinite;
+    }
 </style>
 
 <body class="bg-black text-white">
@@ -101,20 +112,20 @@
                     <div class="text-3xl font-bold glow-text">🎬 Infoflix</div>
                     <div class="film-strip w-20 hidden md:block"></div>
                 </div>
-                <nav class="flex space-x-6 text-gray-300">
-                    <button class="hover:text-red-500 transition-colors">Início</button>
-                    <button class="hover:text-red-500 transition-colors">Gêneros</button>
-                    <button class="hover:text-red-500 transition-colors">Em Alta</button>
-                    <a href="{{ route('login') }}" class="bg:text-red-500 transition-colors ">
-                        <button class="bg-gradient-to-r from-red-700 to-red-500 px-4 py-2 rounded-full font-semibold hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-red-500/25">
-                            Login
-                        </button>
+                <nav class="flex justify-center align-center space-x-6 text-gray-300">
+                    <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors my-auto">Início</a>
+                    <a href="#featured" class="hover:text-red-500 transition-colors my-auto">Filmes</a>
+                    <a href="#categories" class="hover:text-red-500 transition-colors my-auto">Gêneros</a>
+                    <a href="{{ route('login') }}" class="hover:text-red-500 transition-colors my-auto">Login</a>
+                    <a href="{{ route('register') }}" class="bg-gradient-to-r from-red-700 to-red-500 px-4 py-2 rounded-full font-semibold hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-red-500/25 my-auto">
+                        Criar Conta
                     </a>
                 </nav>
             </div>
         </div>
     </header>
 
+    <!-- Hero Section -->
     <section id="home" class="hero-bg min-h-screen flex items-center justify-center relative">
         <div class="spotlight top-1/4 left-1/4"></div>
         <div class="spotlight top-3/4 right-1/4" style="animation-delay: -4s;"></div>
@@ -127,12 +138,109 @@
                 Explore o mundo do cinema com estilo. Dos clássicos aos mais recentes sucessos de bilheteria.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
-                <button class="bg-gradient-to-r from-red-700 to-red-500 px-8 py-4 rounded-full font-semibold hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-red-500/25">
-                    Explorar Gêneros
-                </button>
-                <button class="border-2 border-white/20 px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition-all duration-300">
-                    O Que Está em Alta
-                </button>
+                <a href="{{ route('register') }}" class="bg-gradient-to-r from-red-700 to-red-500 px-8 py-4 rounded-full font-semibold hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-red-500/25">
+                    Começar a Explorar
+                </a>
+                <a href="#featured" class="border-2 border-white/20 px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition-all duration-300">
+                    Ver Filmes em Destaque
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filmes em Destaque -->
+    @if(isset($featuredMovies) && $featuredMovies->count() > 0)
+        <section id="featured" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl font-bold text-white mb-12 text-center glow-text">
+                    Filmes em Destaque 🎭
+                </h2>
+                <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">
+                    Descubra os filmes mais populares e aclamados da plataforma
+                </p>
+                <div class="movie-grid">
+                    @foreach($featuredMovies as $movie)
+                        <div class="movie-card rounded-xl overflow-hidden border border-gray-700">
+                            @if($movie->cover_image)
+                                <img src="{{ $movie->cover_image }}" alt="{{ $movie->name }}" class="w-full h-80 object-cover">
+                            @else
+                                <div class="w-full h-80 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                                    <span class="text-6xl">🎬</span>
+                                </div>
+                            @endif
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-white mb-2">{{ $movie->name }}</h3>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
+                                        {{ $movie->year }}
+                                    </span>
+                                    @if($movie->categories->count() > 0)
+                                        <span class="text-sm text-gray-400">{{ $movie->categories->first()->name }}</span>
+                                    @endif
+                                </div>
+                                @if($movie->synopsis)
+                                    <p class="text-gray-400 text-sm line-clamp-3">{{ Str::limit($movie->synopsis, 120) }}</p>
+                                @endif
+                                <div class="mt-4">
+                                    <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors">
+                                        Criar Conta para Ver
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="text-center mt-12">
+                    <a href="{{ route('register') }}" class="bg-gradient-to-r from-red-700 to-red-500 px-8 py-4 rounded-full font-semibold hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-red-500/25">
+                        Ver Todos os Filmes
+                    </a>
+                </div>
+            </div>
+        </section>
+    @endif
+
+    <!-- Categorias -->
+    @if(isset($categories) && $categories->count() > 0)
+        <section id="categories" class="py-20 px-6 bg-gray-900/50">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl font-bold text-white mb-12 text-center glow-text">
+                    Gêneros 🏷️
+                </h2>
+                <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">
+                    Explore filmes por gênero e encontre exatamente o que você procura
+                </p>
+                <div class="category-grid">
+                    @foreach($categories as $category)
+                        <div class="movie-card rounded-xl p-6 text-center hover:border-red-500/50 transition-all duration-300">
+                            <div class="text-4xl mb-4">🎭</div>
+                            <h3 class="text-xl font-bold text-white mb-2">{{ $category->name }}</h3>
+                            <p class="text-gray-400 text-sm mb-4">{{ $category->movies_count }} filmes</p>
+                            <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 bg-red-600/20 text-red-400 text-sm font-medium rounded-lg border border-red-500/30 hover:bg-red-600/30 hover:border-red-500/50 transition-all duration-200">
+                                Explorar
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    <!-- Call to Action Final -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl font-bold text-white mb-6 glow-text">
+                Pronto para Começar? 🚀
+            </h2>
+            <p class="text-xl text-gray-400 mb-8">
+                Junte-se a milhares de usuários que já descobriram filmes incríveis no Infoflix
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="{{ route('register') }}" class="bg-gradient-to-r from-red-700 to-red-500 px-8 py-4 rounded-full font-semibold hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-red-500/25">
+                    Criar Conta Gratuita
+                </a>
+                <a href="{{ route('login') }}" class="border-2 border-white/20 px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition-all duration-300">
+                    Já Tenho Conta
+                </a>
             </div>
         </div>
     </section>
