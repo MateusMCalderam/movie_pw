@@ -14,7 +14,6 @@
                 <div class="flex items-center gap-2">
                     <a href="{{ route('categories.edit', $category) }}" class="text-blue-600 hover:underline">Editar</a>
 
-                    <!-- Botão para abrir modal -->
                     <button 
                         class="text-red-600 hover:underline"
                         onclick="openDeleteModal({{ $category->id }}, '{{ $category->name }}')">
@@ -25,7 +24,6 @@
         @endforeach
     </ul>
 
-    <!-- Modal -->
     <div id="deleteModal" class="hidden fixed inset-0 flex items-center justify-center bg-opacity-50">
         <div class="bg-white rounded-lg shadow-lg w-96 p-6">
             <h2 class="text-lg font-semibold mb-4">Confirmar Exclusão</h2>
