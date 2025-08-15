@@ -17,7 +17,7 @@ class SeedMoviesAndCategories extends Command
 
     public function handle()
     {
-        $this->info('🎬 Iniciando seeders de filmes e categorias...');
+        $this->info('Iniciando seeders de filmes e categorias...');
         
         $apiKey = config('services.tmdb.api_key');
         if (empty($apiKey)) {

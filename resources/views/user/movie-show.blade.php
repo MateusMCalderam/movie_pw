@@ -44,7 +44,7 @@
                     <!-- Cover Image -->
                     <div class="lg:col-span-1">
                         @if($movie->cover_image)
-                            <img src="{{ $movie->cover_image }}" 
+                            <img src="{{ getCoverUrl($movie->cover_image) }}" 
                                  alt="{{ $movie->name }}" 
                                  class="w-full h-96 lg:h-full object-cover">
                         @else
@@ -107,7 +107,7 @@
                             <div class="movie-card rounded-xl overflow-hidden border border-gray-700 hover:border-red-500/50 transition-all duration-300 group">
                                 @if($relatedMovie->cover_image)
                                     <div class="relative overflow-hidden">
-                                        <img src="{{ $relatedMovie->cover_image }}" 
+                                        <img src="{{ getCoverUrl($relatedMovie->cover_image) }}" 
                                              alt="{{ $relatedMovie->name }}" 
                                              class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>

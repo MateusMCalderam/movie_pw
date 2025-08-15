@@ -104,7 +104,6 @@
 </style>
 
 <body class="bg-black text-white">
-    <!-- Cabeçalho -->
     <header class="bg-black/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
@@ -125,7 +124,6 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section id="home" class="hero-bg min-h-screen flex items-center justify-center relative">
         <div class="spotlight top-1/4 left-1/4"></div>
         <div class="spotlight top-3/4 right-1/4" style="animation-delay: -4s;"></div>
@@ -148,7 +146,6 @@
         </div>
     </section>
 
-    <!-- Filmes em Destaque -->
     @if(isset($featuredMovies) && $featuredMovies->count() > 0)
         <section id="featured" class="py-20 px-6">
             <div class="max-w-7xl mx-auto">
@@ -162,7 +159,7 @@
                     @foreach($featuredMovies as $movie)
                         <div class="movie-card rounded-xl overflow-hidden border border-gray-700">
                             @if($movie->cover_image)
-                                <img src="{{ $movie->cover_image }}" alt="{{ $movie->name }}" class="w-full h-80 object-cover">
+                                <img src="{{ getCoverUrl($movie->cover_image) }}" alt="{{ $movie->name }}" class="w-full h-80 object-cover">
                             @else
                                 <div class="w-full h-80 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
                                     <span class="text-6xl">🎬</span>
@@ -199,7 +196,6 @@
         </section>
     @endif
 
-    <!-- Categorias -->
     @if(isset($categories) && $categories->count() > 0)
         <section id="categories" class="py-20 px-6 bg-gray-900/50">
             <div class="max-w-7xl mx-auto">
@@ -225,7 +221,6 @@
         </section>
     @endif
 
-    <!-- Call to Action Final -->
     <section class="py-20 px-6">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-4xl font-bold text-white mb-6 glow-text">

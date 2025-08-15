@@ -7,13 +7,11 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <!-- Header -->
             <div class="admin-card rounded-xl p-6 mb-8">
                 <h1 class="text-3xl font-bold text-white">Novo Filme</h1>
                 <p class="text-gray-400 mt-2">Preencha as informações abaixo para cadastrar um novo filme</p>
             </div>
 
-            <!-- Error Messages -->
             @if ($errors->any())
                 <div class="admin-card rounded-xl p-4 mb-6 border-l-4 border-red-500 bg-red-500/10">
                     <div class="flex items-center mb-3">
@@ -32,9 +30,8 @@
                 </div>
             @endif
 
-            <!-- Form -->
             <div class="admin-card rounded-xl p-8">
-                <form action="{{ route('admin.movies.store') }}" method="POST" class="space-y-6">
+                <form action="{{ route('admin.movies.store') }}" method="POST" class="space-y-6" enctype="multipart/form-data">
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -82,33 +79,12 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-white mb-2">
-                            Imagem de Capa
-                        </label>
-
-                        <!-- Campo para URL -->
-                        <input type="text" name="cover_image" id="cover_image"
-                            class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-                            value="{{ old('cover_image') }}" placeholder="https://exemplo.com/imagem.jpg"
-                            oninput="previewImageFromUrl()">
-
-                        <p class="text-gray-400 text-sm mt-2">Ou envie um arquivo</p>
-
-                        <!-- Campo para upload -->
-                        <input type="file" name="cover_image_file" id="cover_image_file" class="mt-2 block w-full text-sm text-gray-400
-               file:mr-4 file:py-2 file:px-4
-               file:rounded-full file:border-0
-               file:text-sm file:font-semibold
-               file:bg-red-500 file:text-white
-               hover:file:bg-red-600" accept="image/*" onchange="previewImageFromFile(event)">
-
-                        <!-- Preview -->
-                        <div class="mt-4">
-                            <img id="coverPreview" src="" alt="Preview da Capa"
-                                class="max-h-64 rounded-lg border border-gray-700 hidden">
-                        </div>
-                    </div>
+                    <x-file-url-input 
+                        fileName="cover_image_file"
+                        urlName="cover_image"
+                        label="Imagem de Capa"
+                        value="{{  old('cover_image', $movie->cover_image ?? '') }}"
+                    />
 
 
                     <div>
@@ -123,7 +99,6 @@
                         </p>
                     </div>
 
-                    <!-- Trailer Preview -->
                     <div id="trailerPreview" class="hidden">
                         <label class="block text-sm font-medium text-white mb-2">
                             Preview do Trailer
@@ -133,7 +108,6 @@
                         </div>
                     </div>
 
-                    <!-- Form Actions -->
                     <div
                         class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-700">
                         <a href="{{ route('admin.movies.index') }}"
@@ -163,31 +137,6 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
     <script>
-        function previewImageFromUrl() {
-            const url = document.getElementById('cover_image').value;
-            const preview = document.getElementById('coverPreview');
-            if (url) {
-                preview.src = url;
-                preview.classList.remove('hidden');
-            } else {
-                preview.classList.add('hidden');
-            }
-        }
-
-        function previewImageFromFile(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('coverPreview');
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
-                }
-                reader.readAsDataURL(file);
-            } else {
-                preview.classList.add('hidden');
-            }
-        }
         function updateTrailerPreview() {
             const trailerLink = document.getElementById('trailer_link').value;
             const preview = document.getElementById('trailerPreview');
@@ -205,7 +154,6 @@
             }
         }
 
-        // Update preview on page load if there's a value
         document.addEventListener('DOMContentLoaded', function () {
             updateTrailerPreview();
         });

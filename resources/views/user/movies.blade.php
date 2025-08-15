@@ -108,7 +108,7 @@
                             <div class="movie-card rounded-xl overflow-hidden border border-gray-700 hover:border-red-500/50 transition-all duration-300 group">
                                 @if($movie->cover_image)
                                     <div class="relative overflow-hidden">
-                                        <img src="{{ $movie->cover_image }}" 
+                                        <img src="{{ getCoverUrl($movie->cover_image) }}" 
                                              alt="{{ $movie->name }}" 
                                              class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300">
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>

@@ -7,13 +7,11 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <!-- Header -->
             <div class="admin-card rounded-xl p-6 mb-8">
                 <h1 class="text-3xl font-bold text-white">Editar Filme</h1>
                 <p class="text-gray-400 mt-2">Atualize as informações do filme "{{ $movie->name }}"</p>
             </div>
 
-            <!-- Error Messages -->
             @if ($errors->any())
                 <div class="admin-card rounded-xl p-4 mb-6 border-l-4 border-red-500 bg-red-500/10">
                     <div class="flex items-center mb-3">
@@ -32,9 +30,9 @@
                 </div>
             @endif
 
-            <!-- Form -->
             <div class="admin-card rounded-xl p-8">
-                <form action="{{ route('admin.movies.update', $movie) }}" method="POST" class="space-y-6">
+                <form action="{{ route('admin.movies.update', $movie) }}" method="POST" class="space-y-6"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -81,34 +79,8 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-white mb-2">
-                            Imagem de Capa
-                        </label>
-
-                        <!-- Alternativa: URL -->
-                        <input type="text" name="cover_image" id="cover_image"
-                            class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-                            value="{{ old('cover_image', $movie->cover_image) }}"
-                            placeholder="https://exemplo.com/imagem.jpg" oninput="previewImageFromUrl()">
-
-                        <p class="text-gray-400 text-sm mt-2">Ou selecione um arquivo abaixo</p>
-
-                        <!-- Upload de Arquivo -->
-                        <input type="file" name="cover_image_file" id="cover_image_file" class="mt-2 block w-full text-sm text-gray-400
-               file:mr-4 file:py-2 file:px-4
-               file:rounded-full file:border-0
-               file:text-sm file:font-semibold
-               file:bg-red-500 file:text-white
-               hover:file:bg-red-600" accept="image/*" onchange="previewImageFromFile(event)">
-
-                        <!-- Preview -->
-                        <div class="mt-4">
-                            <img id="coverPreview" src="{{ old('cover_image', $movie->cover_image) }}"
-                                alt="Preview da Capa" class="max-h-64 rounded-lg border border-gray-700">
-                        </div>
-                    </div>
-
+                    <x-file-url-input fileName="cover_image_file" urlName="cover_image" label="Imagem de Capa"
+                        value="{{ $movie->cover_image ?? '' }}" />
 
                     <div>
                         <label for="trailer_link" class="block text-sm font-medium text-white mb-2">
@@ -116,13 +88,12 @@
                         </label>
                         <input type="text" name="trailer_link" id="trailer_link"
                             class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
-                            value="{{ old('trailer_link', $movie->trailer_link) }}"
+                            value="{{ old('trailer_link', $movie->trailer_link ?? '') }}"
                             placeholder="https://youtube.com/watch?v=..." onchange="updateTrailerPreview()">
                         <p class="text-sm text-gray-400 mt-1">Cole o link completo do YouTube para visualizar o preview
                         </p>
                     </div>
 
-                    <!-- Trailer Preview -->
                     <div id="trailerPreview" class="hidden">
                         <label class="block text-sm font-medium text-white mb-2">
                             Preview do Trailer
@@ -132,7 +103,6 @@
                         </div>
                     </div>
 
-                    <!-- Form Actions -->
                     <div
                         class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-700">
                         <a href="{{ route('admin.movies.index') }}"
@@ -161,26 +131,6 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
     <script>
-        function previewImageFromUrl() {
-            const url = document.getElementById('cover_image').value;
-            const preview = document.getElementById('coverPreview');
-            if (url) {
-                preview.src = url;
-            }
-        }
-
-        function previewImageFromFile(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('coverPreview');
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
         function updateTrailerPreview() {
             const trailerLink = document.getElementById('trailer_link').value;
             const preview = document.getElementById('trailerPreview');
@@ -211,13 +161,20 @@
                 placeholder: "Selecione as categorias...",
                 render: {
                     option: function (data, escape) {
-                        return `<div class="py-2 px-3">${escape(data.text)}</div>`;
+                        return `<div class="py-2 px-3 bg-gray-800 text-white hover:bg-gray-700">${escape(data.text)}</div>`;
                     },
                     item: function (data, escape) {
                         return `<div class="bg-red-500 text-white rounded px-2 py-1 mr-1">${escape(data.text)}</div>`;
                     }
+                },
+                classNames: {
+                    input: 'w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200',
+                    dropdown: 'bg-gray-800 border border-gray-700 rounded-lg mt-1',
+                    option: 'text-white hover:bg-gray-700/50 px-3 py-2',
+                    item: 'bg-red-500 text-white rounded px-2 py-1 mr-1'
                 }
             });
         });
+
     </script>
 </x-app-layout>

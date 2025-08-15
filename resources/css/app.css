@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.ts-control {
+    background-color: rgba(31, 41, 55, 0.5); 
+    border: 1px solid #374151; 
+    color: white;
+    border-radius: 0.5rem; 
+    padding: 0.75rem 1rem; 
+}
+
+.ts-dropdown {
+    background-color: #1f2937; 
+    border: 1px solid #374151;
+    border-radius: 0.5rem;
+}
+
+.ts-item {
+    color: white;
+}
+
+.ts-item.ts-selected {
+    background-color: #ef4444;
+}

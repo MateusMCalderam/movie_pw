@@ -7,7 +7,6 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Welcome Section -->
             <div class="admin-card rounded-xl p-8 mb-8 text-center relative overflow-hidden">
                 <div class="spotlight top-1/4 left-1/4"></div>
                 <div class="spotlight top-3/4 right-1/4" style="animation-delay: -4s;"></div>
@@ -21,9 +20,11 @@
                     </p>
                     <div class="flex flex-wrap justify-center gap-4">
                         <a href="{{ route('admin.movies.index') }}" class="icon-button admin-button px-8 py-3 rounded-full font-semibold text-white hover:scale-105 transform transition-all duration-300 shadow-lg">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M6 20h12M6 4h12"></path>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M4 18V8a1 1 0 0 1 1-1h1.5l1.707-1.707A1 1 0 0 1 8.914 5h6.172a1 1 0 0 1 .707.293L17.5 7H19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"/>
+                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                             </svg>
+
                             Gerenciar Filmes
                         </a>
                         <a href="{{ route('admin.categories.index') }}" class="icon-button border-2 border-red-500/50 px-8 py-3 rounded-full font-semibold text-red-400 hover:bg-red-500/10 transition-all duration-300">
@@ -36,7 +37,6 @@
                 </div>
             </div>
 
-            <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <div class="emoji-card">
                     <div class="emoji-icon">🎭</div>
@@ -56,8 +56,7 @@
                     <p class="text-3xl font-bold text-red-400">{{ \App\Models\User::count() }}</p>
                 </div>
             </div>
-
-            <!-- Quick Actions -->
+            
             <div class="admin-card rounded-xl p-6">
                 <h3 class="text-2xl font-semibold text-white mb-6 text-center">Ações Rápidas</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -38,7 +38,7 @@
                         @foreach($recentMovies as $movie)
                             <div class="movie-card rounded-lg overflow-hidden border border-gray-700 hover:border-red-500/50 transition-all duration-300">
                                 @if($movie->cover_image)
-                                    <img src="{{ $movie->cover_image }}" alt="{{ $movie->name }}" class="w-full h-48 object-cover">
+                                    <img src="{{ getCoverUrl($movie->cover_image) }}" alt="{{ $movie->name }}" class="w-full h-48 object-cover">
                                 @else
                                     <div class="w-full h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
                                         <span class="text-4xl">🎬</span>

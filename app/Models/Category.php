@@ -32,29 +32,4 @@ class Category extends Model
                     ->withTimestamps()
                     ->withPivot('id');
     }
-
-    public function scopeSearch($query, $search)
-    {
-        return $query->where('name', 'like', "%{$search}%");
-    }
-
-    public function getDisplayNameAttribute(): string
-    {
-        return ucfirst(strtolower($this->name));
-    }
-
-    public function hasMovies(): bool
-    {
-        return $this->movies()->exists();
-    }
-
-    public function getMoviesCountAttribute(): int
-    {
-        return $this->movies()->count();
-    }
-
-    public function getRouteKeyName()
-    {
-        return 'uuid';
-    }
 }

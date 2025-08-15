@@ -7,7 +7,6 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Header Actions -->
             <div class="admin-card rounded-xl p-6 mb-8">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <h1 class="text-3xl font-bold text-white">Gerenciar Filmes</h1>
@@ -20,7 +19,6 @@
                 </div>
             </div>
 
-            <!-- Success Message -->
             @if(session('success'))
                 <div class="admin-card rounded-xl p-4 mb-6 border-l-4 border-green-500 bg-green-500/10">
                     <div class="flex items-center">
@@ -32,7 +30,6 @@
                 </div>
             @endif
 
-            <!-- Movies Table -->
             <div class="admin-card rounded-xl overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="admin-table w-full">
@@ -88,7 +85,6 @@
                     </table>
                 </div>
                 
-                <!-- Pagination -->
                 @if($movies->hasPages())
                     <div class="px-6 py-4 border-t border-gray-700">
                         <div class="flex justify-center">
@@ -98,7 +94,6 @@
                 @endif
             </div>
 
-            <!-- Empty State -->
             @if($movies->isEmpty())
                 <div class="admin-card rounded-xl p-12 text-center">
                     <div class="emoji-icon">🎬</div>
